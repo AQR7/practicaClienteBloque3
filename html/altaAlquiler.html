@@ -1,0 +1,52 @@
+<form name="frmAltaAlquiler" id="frmAltaAlquiler">
+				
+	<div class="form-group">
+		<label for="id">Id del alquiler</label>
+		<input type="text" class="form-control" name="txtId"  id="txtId"  placeholder="Introduce el Id" size="3" maxlength="3"/>
+	</div>			
+	<div class="form-group">
+		<label for="dni">DNI del cliente</label>
+		<input type="text" class="form-control" name="txtDniCliente" placeholder="Introduce el DNI" size="9" maxlength="9"/>
+	</div>
+	<div class="form-group">
+		<label for="dni">Duracion</label>
+		<input type="text" class="form-control" name="txtDuracion" placeholder="Introduce la duracion en meses" size="4" maxlength="4"/>
+	</div>
+	<div class="form-group">
+		<label for="txtPrecio">Precio</label>
+		<input type="text" class="form-control" name="txtPrecio" placeholder="Introduce el precio"  size="7" maxlength="7"/>
+	</div>
+	<div class="form-group">
+		<label for="txtFecha">Fecha</label>
+		<input type="text" class="form-control" id="txtFecha" name="txtFecha" placeholder="Introduce la fecha" >
+	</div>
+	<div class="form-group">
+		<label for="idInmueble">Id del Inmueble</label>
+		<input type="text" class="form-control" name="txtIdInmueble" placeholder="Introduce el Id del Inmueble" size="3" maxlength="3"/>
+	</div>	
+	 <div class="form-group">
+    <input class="oculto" type="text" id="txtCalendarioAlternativo" name="txtCalendarioAlternativo"/>
+  </div>
+					
+</form>
+
+<script>
+  $(function() {
+  	
+    	$("#txtFecha").datepicker({
+  						altField : "#txtCalendarioAlternativo",
+  						altFormat : $.datepicker.ATOM,
+  						dateFormat : "dd'/'mm'/'yy",
+  						changeYear: true,
+  						changeMonth: true,
+  						
+  						
+  						
+  						showAnim: "fadeIn",
+  						
+  						
+  						// dayNamesMin : ["D","L","M","X","J","V","S"]
+  	});
+  	
+});  
+  </script> 
