@@ -22,26 +22,32 @@
 	 }]
  }); 
  
+ 	if(localStorage["empleados"] != null)
+	{
+		
+		oArrayEmpleados = JSON.parse(localStorage["empleados"]);
+		rellenaCombo(oArrayEmpleados);
+	} 
+	else 
+	{
+		$.get('php/getEmpleados.php',null,tratarGetEmpleados,'json');	
+	}
+ 
+ 
  $("#cmbInmueble").change(function() 
 {
  var valor=$("#cmbInmueble").val();
 
  if(valor!=0)
- {
+ {   
 	$.get('php/getPropietarios.php',"valor="+valor,insertarEnCampos,'json');
 
-	//$("#txtDniEmpleado").val("");
-	//$("#txtM2").val("");
-	//$("#txtDireccion").val();
  }
  else
  {
-	//$("#txtDireccion").val("");
-	//$("#txtDniEmpleado").val("");
-	//$("#txtM2").val("");
 	frmModificarPropiedad.txtDireccion.value="";
-frmModificarPropiedad.txtDniEmpleado.value="";
-frmModificarPropiedad.txtM2.value="";
+	frmModificarPropiedad.cmbEmpleado.value=0;
+	frmModificarPropiedad.txtM2.value="";
 	
  }
  
@@ -53,7 +59,12 @@ frmModificarPropiedad.txtM2.value="";
 	jQuery.each(oArrayInmueble, function( i , elemento)
 	{
 		frmModificarPropiedad.txtDireccion.value=elemento.direccion;
-		frmModificarPropiedad.txtDniEmpleado.value=elemento.dniEmpleado;
+		
+		if(elemento.m2=$("#cmbInmueble").val())
+		{
+			frmModificarPropiedad.cmbEmpleado.value=elemento.dniEmpleado;
+		}
+		
 		frmModificarPropiedad.txtM2.value=elemento.m2;	
 	});
 }
@@ -71,45 +82,37 @@ function tratarGetPropiedad(oArrayCliente, sStatus, oXHR){
 }
 
 
+function tratarGetEmpleados(oArrayEmpleados, sStatus, oXHR)
+{
+	rellenaCombo(oArrayEmpleados);
+	// Guardar en localStorage
+	localStorage["empleados"] = JSON.stringify(oArrayEmpleados);
+}
 
-function procesoModPropiedad(){
+function rellenaCombo(oArrayEmpleados)
+{
+	$("#cmbEmpleadoModificarPropiedad").empty();
+	$('<option value="0" >Seleccione un empleado</option>').appendTo("#cmbEmpleadoModificarPropiedad");
+	jQuery.each(oArrayEmpleados, function( i , elemento){
+		$('<option value="' + elemento.dni + '" >'+  elemento.nombre+" "+elemento.apellidos+ '</option>').appendTo("#cmbEmpleadoModificarPropiedad");		
+	});
+}
 
-	// Aqui habría que hacer la validacion del formulario
-	// if (validarAltaUbicacion()){
-	
-	//Desactivar boton de envio
-	
-	
+function procesoModPropiedad()
+{
 
-	
-	
-
-	/*
-	alert($('#cmbInmueble').val());
-	alert(frmModificarPropiedad.txtDireccion.value);
-	alert(frmModificarPropiedad.txtAccion.value);
-	
-	alert(frmModificarPropiedad.txtDniEmpleado.value);
-	alert(frmModificarPropiedad.txtM2.value);
-
-	
-	*/
-
-
-	
-	if (validarModPropietarios()){
-	
-	
-	var oPropiedad = new Propiedad($('#cmbInmueble').val(),frmModificarPropiedad.txtDireccion.value,frmModificarPropiedad.txtDniEmpleado.value,frmModificarPropiedad.txtM2.value);
-	
-	
-	var sParametroGET = "propiedad=" + JSON.stringify(oPropiedad);
-	
-	// Script de envio
-	var sURL = encodeURI("php/modificarPropiedad.php?");
-	
-	llamadaAjaxModPropiedad(sURL,sParametroGET);
+	if (validarModPropietarios())
+	{
+		var oPropiedad = new Propiedad($('#cmbInmueble').val(),frmModificarPropiedad.txtDireccion.value,frmModificarPropiedad.cmbEmpleado.value,frmModificarPropiedad.txtM2.value);
+		
+		var sParametroGET = "propiedad=" + JSON.stringify(oPropiedad);
+		
+		// Script de envio
+		var sURL = encodeURI("php/modificarPropiedad.php?");
+		
+		llamadaAjaxModPropiedad(sURL,sParametroGET);
 	}
+	
 }
 
 function llamadaAjaxModPropiedad(sURL,sParametroGET){
@@ -125,33 +128,64 @@ function llamadaAjaxModPropiedad(sURL,sParametroGET){
 
 function respuestaModPropiedad(){
 
-	if(oAjaxModPropiedad.readyState == 4 && oAjaxModPropiedad.status ==200)	{
-				
+	if(oAjaxModPropiedad.readyState == 4 && oAjaxModPropiedad.status == 200)	
+	{		
 		var oArrayRespuesta = JSON.parse(oAjaxModPropiedad.responseText);
 		
-		if (oArrayRespuesta[0] == true){
-			alert("Error : " + oArrayRespuesta[1]);
-		} else {
-			alert("OK : " + oArrayRespuesta[1]);
+		if (oArrayRespuesta[0] == true)
+		{
+			$("#pMensaje").text("");
+			$("#divMensajes").dialog("open");
+			$("#divMensajes").dialog("option","title","Estado");
+			$("#pMensaje").append(oArrayRespuesta[1]);
+
+		} 
+		else 
+		{
+			$("#pMensaje").text("");
+			$("#divMensajes").dialog("open");
+			$("#divMensajes").dialog("option","title","Estado");
+			$("#pMensaje").append(oArrayRespuesta[1]);
 			$("#frmModificarPropiedad")[0].reset();
 		}
-		
-	
-
-		
 	}
 }
-function validarModPropietarios(){
+
+function validarModPropietarios()
+{
 
 	var bValido=true;
 	var sErrores = "";
 	
-	var modificarPropietario=document.getElementById("frmModificarPropiedad");			
+	var modificarPropietario=document.getElementById("frmModificarPropiedad");	
+	var id=modificarPropietario.cmbInmueble.value.trim();
 	var direccion=modificarPropietario.txtDireccion.value.trim();
-	var dni=modificarPropietario.txtDniEmpleado.value.trim();
+	var dni=modificarPropietario.cmbEmpleado.value.trim();
 	var m2=modificarPropietario.txtM2.value.trim();
 
-var oExpReg = /[a-zA-Z\s]{3,40}/;
+	
+	if(id==0)
+	{
+		if(bValido == true)
+		{
+			bValido = false;		
+			//Este campo obtiene el foco
+			modificarPropietario.cmbInmueble.focus();	
+		}
+	
+		sErrores += "\n Elije un inmueble<BR>";
+		
+		//Marcar error
+		modificarPropietario.cmbInmueble.className = "form-control error";
+		
+	}
+	else
+	{
+		modificarPropietario.cmbInmueble.className = "form-control";			
+	}
+	
+	
+	var oExpReg = /[a-zA-Z\s]{3,40}/;
 	
 	if (oExpReg.test(direccion) == false)
 	{
@@ -163,10 +197,10 @@ var oExpReg = /[a-zA-Z\s]{3,40}/;
 			modificarPropietario.txtDireccion.focus();	
 		}
 	
-		sErrores += "\n Dirección incorrecto";
+		sErrores += "\n Dirección incorrecta<BR>";
 		
 		//Marcar error
-			modificarPropietario.txtDireccion.className = "form-control error";
+		modificarPropietario.txtDireccion.className = "form-control error";
 	}
 	else 
 	{
@@ -174,6 +208,25 @@ var oExpReg = /[a-zA-Z\s]{3,40}/;
 		modificarPropietario.txtDireccion.className = "form-control";	
 	}
 	
+	if(dni==0)
+	{
+		if(bValido == true)
+		{
+			bValido = false;		
+			//Este campo obtiene el foco
+			modificarPropietario.cmbEmpleado.focus();	
+		}
+	
+		sErrores += "\n Elije un empleado<BR>";
+		
+		//Marcar error
+		modificarPropietario.cmbEmpleado.className = "form-control error";
+		
+	}
+	else
+	{
+		modificarPropietario.cmbEmpleado.className = "form-control";			
+	}
 	
 	var oExpReg = /^(?:\+|-)?\d+$/;
 	
@@ -187,7 +240,7 @@ var oExpReg = /[a-zA-Z\s]{3,40}/;
 			modificarPropietario.txtM2.focus();	
 		}
 	
-		sErrores += "\n id m2 incorrecto";
+		sErrores += "\n M2 incorrecto<BR>";
 		
 		//Marcar error
 		modificarPropietario.txtM2.className = "form-control error";
@@ -196,14 +249,16 @@ var oExpReg = /[a-zA-Z\s]{3,40}/;
 	else 
 	{
 		modificarPropietario.txtM2.className = "form-control";	
-		
 	}
 
 	
 	
 	if (bValido == false)
 	{	
-		
+		$("#pMensaje").text("");
+		$("#divMensajes").dialog("open");
+		$("#divMensajes").dialog("option","title","Error");
+		$("#pMensaje").append(sErrores);
 	}
 	
 	return bValido;

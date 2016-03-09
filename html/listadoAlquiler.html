@@ -1,0 +1,51 @@
+﻿<form name="frmListarAlquiler" id="frmListarAlquiler">
+  <div class="form-group">
+    <label for="precioAlquiler">Precio</label>
+    <input type="text" class="form-control" id="precioAlquiler"name="precioAlquiler" placeholder="mayores del introducido" size="7" maxlength="7"/>
+  </div>
+
+  <div class="form-group">
+    <label for="txtFechaVentas">Fecha Entrada</label>
+    <input type="text" class="form-control" id="txtFechaAlquiler" name="txtFechaAlquiler" placeholder="Introduce la fecha"  >
+  </div>
+    <div class="form-group">
+    <input class="oculto" type="text" id="txtCalendarioAlternativo3" name="txtCalendarioAlternativo3"/>
+  </div>
+  
+  <div class="form-group">
+    <label for="txtFechaVentas2">Fecha salida</label>
+    <input type="text" class="form-control" id="txtFechaAlquiler2" name="txtFechaAlquiler2" placeholder="Introduce la fecha"  >
+  </div>
+  <div class="form-group">
+    <input class="oculto" type="text" id="txtCalendarioAlternativo4" name="txtCalendarioAlternativo4"/>
+  </div>
+  
+  
+  
+<script>
+  $(function() {
+  	
+  	
+  	$("#txtFechaAlquiler").datepicker({
+  						altField : "#txtCalendarioAlternativo3",
+  						altFormat : $.datepicker.ATOM,
+  						dateFormat : "dd'/'mm'/'yy",
+  						changeYear: true,
+  						changeMonth: true,
+  						showAnim: "fadeIn",
+  	});
+	
+	
+		$("#txtFechaAlquiler2").datepicker({
+  						altField : "#txtCalendarioAlternativo4",
+  						altFormat : $.datepicker.ATOM,
+  						dateFormat : "dd'/'mm'/'yy",
+  						changeYear: true,
+  						changeMonth: true,
+  						showAnim: "fadeIn",
+  	});
+  	
+});  
+  </script> 
+  
+</form>

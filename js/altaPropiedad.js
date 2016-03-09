@@ -41,10 +41,7 @@ else
 		var datos=$("#frmAltaPropiedad").serialize();
 		$.post("php/altaPropiedad.php",datos,tratarAltaPropiedad,'json');
 	}
-	else
-	{
-		alert("NO VALIDO");
-	}
+
 	 
  }
  
@@ -54,13 +51,13 @@ else
 	
 	if(textStatus=="success")
 	{
-		alert(datos[1]);
+		$("#pMensaje").text("");
+		$("#divMensajes").dialog("open");
+		$("#divMensajes").dialog("option","title","Estado");
+		$("#pMensaje").append(datos[1]);
 		$("#frmAltaPropiedad")[0].reset();
 	}
-	else
-	{
-		alert(datos[0]);
-	}
+
 }
 
 
@@ -70,8 +67,6 @@ else
 		rellenaCombo(oArrayEmpleados);
 		// Guardar en localStorage
 		localStorage["empleados"] = JSON.stringify(oArrayEmpleados);
-		
-
 	}
 	
 	function rellenaCombo(oArrayEmpleados)
@@ -103,7 +98,7 @@ else
 				altaPropiedad.txtIdInmueble.focus();	
 			}
 		
-			sErrores += "\n Introduzca un id";
+			sErrores += "\n Introduzca un id<br>";
 			
 			//Marcar error
 			altaPropiedad.txtIdInmueble.className = "form-control error";
@@ -125,7 +120,7 @@ else
 				altaPropiedad.txtDireccion.focus();	
 			}
 		
-			sErrores += "\nNombre incorrecto";
+			sErrores += "\n Direccion incorrecta<br>";
 			
 			//Marcar error
 			altaPropiedad.txtDireccion.className = "form-control error";
@@ -147,7 +142,7 @@ else
 				altaPropiedad.cmbEmpleado.focus();	
 			}
 		
-			sErrores += "\n Elija un empleado";
+			sErrores += "\n Elija un empleado<br>";
 			
 			//Marcar error
 			altaPropiedad.cmbEmpleado.className = "form-control error";
@@ -171,7 +166,7 @@ else
 				altaPropiedad.txtM2.focus();	
 			}
 		
-			sErrores += "\n Introduzca los M2";
+			sErrores += "\n Introduzca los M2<br>";
 			
 			//Marcar error
 			altaPropiedad.txtM2.className = "error form-control";
@@ -186,7 +181,10 @@ else
 		//Resultado
 		if (bValido == false)
 		{	
-			
+			$("#pMensaje").text("");
+			$("#divMensajes").dialog("open");
+			$("#divMensajes").dialog("option","title","Error");
+			$("#pMensaje").append(sErrores);
 		}
 		
 		return bValido;

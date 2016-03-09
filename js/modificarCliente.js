@@ -61,15 +61,23 @@ function procesoModificarCliente(){
 }	
 
 
-function tratarModificarCliente(oRespuesta,sEstado,oXHR){
-
+function tratarModificarCliente(oRespuesta,sEstado,oXHR)
+{
 		if (oRespuesta[0] == true)
 		{
-			alert("Error : " + oRespuesta[1]);
-			$("#frmModificarCliente")[0].reset();
+			$("#pMensaje").text("");
+			$("#divMensajes").dialog("open");
+			$("#divMensajes").dialog("option","title","Estado");
+			$("#pMensaje").append(oRespuesta[1]);
+			
 		} else 
 		{
-			alert("OK : " + oRespuesta[1]);
+			$("#frmModificarCliente")[0].reset();
+			$("#pMensaje").text("");
+			$("#divMensajes").dialog("open");
+			$("#divMensajes").dialog("option","title","Estado");
+			$("#pMensaje").append(oRespuesta[1]);
+			$.get('php/getClientes.php',null,tratarGetClientes,'json');
 		}
 	
 }
@@ -100,12 +108,11 @@ function validarModificarCliente()
 	var bValido=true;
 	var sErrores = "";
 	
-	var modificarCliente=document.getElementById("frmModificarCliente");
-	var dni=modificarCliente.cmbCliente.value.trim();
+	var modificarCliente=document.getElementById("frmModificarCliente");	
+	var dni=modificarCliente.cmbClienteModificar.value.trim();	
 	var nombre=modificarCliente.txtNombreCliente.value.trim();
 	var apellidos=modificarCliente.txtApellidosCliente.value.trim();
 	var telefono=modificarCliente.txtTelefonoCliente.value.trim();
-	
 	
 	if(dni==0)
 	{
@@ -114,20 +121,21 @@ function validarModificarCliente()
 		{
 			bValido = false;		
 			//Este campo obtiene el foco
-			modificarCliente.cmbCliente.focus();	
+			modificarCliente.cmbClienteModificar.focus();	
 		}
 	
-		sErrores += "\n Elija un cliente";
+		sErrores += "\Elije un cliente<br>";
 		
 		//Marcar error
-		modificarCliente.cmbCliente.className = "form-control error";
+		modificarCliente.cmbClienteModificar.className = "form-control error";
 	
 	}
 	else 
 	{
 		//Desmarcar error
-		modificarCliente.cmbCliente.className = "form-control";	
+		modificarCliente.cmbClienteModificar.className = "form-control";	
 	}
+	
 	var oExpReg = /[a-zA-Z\s]{3,40}/;
 	
 	if (oExpReg.test(nombre) == false)
@@ -140,7 +148,7 @@ function validarModificarCliente()
 			modificarCliente.txtNombreCliente.focus();	
 		}
 	
-		sErrores += "\nNombre incorrecto";
+		sErrores += "\nNombre incorrecto<br>";
 		
 		//Marcar error
 		modificarCliente.txtNombreCliente.className = "form-control error";
@@ -165,7 +173,7 @@ function validarModificarCliente()
 			modificarCliente.txtApellidosCliente.focus();	
 		}
 	
-		sErrores += "\n Apellidos incorrecto";
+		sErrores += "\n Apellidos incorrecto<br>";
 		
 		//Marcar error
 			modificarCliente.txtApellidosCliente.className = "form-control error";
@@ -188,7 +196,7 @@ function validarModificarCliente()
 			modificarCliente.txtTelefonoCliente.focus();	
 		}
 	
-		sErrores += "\n Teléfono incorrecto";
+		sErrores += "\n Teléfono incorrecto<br>";
 		
 		//Marcar error
 		modificarCliente.txtTelefonoCliente.className = "error form-control";
@@ -203,7 +211,10 @@ function validarModificarCliente()
 	//Resultado
 	if (bValido == false)
 	{	
-		
+		$("#pMensaje").text("");
+		$("#divMensajes").dialog("open");
+		$("#divMensajes").dialog("option","title","Error");
+		$("#pMensaje").append(sErrores);
 	}
 	
 	return bValido;

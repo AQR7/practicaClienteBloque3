@@ -12,8 +12,8 @@ $usuario   = "root";
 $password  = "";
 
 $id=$_REQUEST['txtId'];
-$dni=$_REQUEST['txtDniCliente'];
-$inmueble=$_REQUEST['txtIdImueble'];
+$dni=$_REQUEST['cmbClienteVentas'];
+$inmueble=$_REQUEST['cmbInmuebleVentas'];
 $precio=$_REQUEST['txtPrecio'];
 $fecha=$_REQUEST['txtCalendarioAlternativo'];
 
@@ -24,14 +24,28 @@ mysql_query("SET NAMES 'utf8'", $conexion);
 mysql_select_db($basedatos, $conexion) or die(mysql_error());
 
 
+$sql = "SELECT `id` FROM `ventas` WHERE `id`=".$id." OR `idInmueble`=".$inmueble;
 
-$mensaje='INSERTADO CON EXITO';
-$error = false;
+$resultados = mysql_query($sql, $conexion) or die(mysql_error());
 
-// Inserto el registro
-$sql = "insert into ventas (id, dniCliente,precio,fecha,idInmueble) VALUES ($id,'$dni',$precio,'$fecha',$inmueble)";
 
-$resultados = @mysql_query($sql, $conexion) or die(mysql_error());
+$contador=mysql_num_rows($resultados);
+
+if($contador>0)
+{
+	$mensaje= 'YA EXISTE ESA VENTA';
+	$error = true;
+
+}
+else
+{
+	$mensaje='INSERTADO CON EXITO';
+	$error = false;
+
+	$sql = "insert into ventas (id, dniCliente,precio,fecha,idInmueble) VALUES ($id,'$dni',$precio,'$fecha',$inmueble)";
+
+	$resultados = @mysql_query($sql, $conexion) or die(mysql_error());
+}
 	
 // Formateo la respuesa como un array JSON
 $respuesta = array($error,$mensaje);

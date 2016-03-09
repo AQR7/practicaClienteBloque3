@@ -1,0 +1,81 @@
+﻿<!--
+<form name="frmAltaCliente" id="frmAltaCliente">
+	<label for="txtCodCliente">DNI:</label>
+    <input type="text" name="txtDni" size="9" maxlength="9"/>
+    <br/>
+
+    <label for="txtNombreCliente">Nombre:</label>
+    <input type="text" name="txtNombreCliente"/>
+    <br/>
+    <label for="txtApellidosCliente">Apellidos:</label>
+    <input type="text" name="txtApellidosCliente"/>
+    <br/>
+    <label for="txtTelefonoCliente">Telefono:</label>
+    <input type="text" name="txtTelefonoCliente"/>
+    <br/>
+</form>
+
+-->
+<form name="frmListarVentas" id="frmListarVentas">
+  <div class="form-group">
+    <label for="precioVentas">Precio</label>
+    <input type="text" class="form-control" id="precioVentas"name="precioVentas" placeholder="mayores del introducido" size="7" maxlength="7"/>
+  </div>
+
+  <div class="form-group">
+    <label for="txtFechaVentas">Fecha Entrada</label>
+    <input type="text" class="form-control" id="txtFechaVentas" name="txtFechaVentas" placeholder="Introduce la fecha"  >
+  </div>
+    <div class="form-group">
+    <input class="oculto" type="text" id="txtCalendarioAlternativo1" name="txtCalendarioAlternativo1"/>
+  </div>
+  
+  <div class="form-group">
+    <label for="txtFechaVentas2">Fecha salida</label>
+    <input type="text" class="form-control" id="txtFechaVentas2" name="txtFechaVentas2" placeholder="Introduce la fecha"  >
+  </div>
+  <div class="form-group">
+    <input class="oculto" type="text" id="txtCalendarioAlternativo2" name="txtCalendarioAlternativo2"/>
+  </div>
+  
+  
+  
+<script>
+  $(function() {
+  	
+  	
+  	$("#txtFechaVentas").datepicker({
+  						altField : "#txtCalendarioAlternativo1",
+  						altFormat : $.datepicker.ATOM,
+  						dateFormat : "dd'/'mm'/'yy",
+  						changeYear: true,
+  						changeMonth: true,
+  						
+  						
+  						
+  						showAnim: "fadeIn",
+  						
+  						
+  						// dayNamesMin : ["D","L","M","X","J","V","S"]
+  	});
+	
+	
+		$("#txtFechaVentas2").datepicker({
+  						altField : "#txtCalendarioAlternativo2",
+  						altFormat : $.datepicker.ATOM,
+  						dateFormat : "dd'/'mm'/'yy",
+  						changeYear: true,
+  						changeMonth: true,
+  						
+  						
+  						
+  						showAnim: "fadeIn",
+  						
+  						
+  						// dayNamesMin : ["D","L","M","X","J","V","S"]
+  	});
+  	
+});  
+  </script> 
+  
+</form>

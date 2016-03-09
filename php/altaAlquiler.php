@@ -23,7 +23,7 @@ mysql_query("SET NAMES 'utf8'", $conexion);
 mysql_select_db($basedatos, $conexion) or die(mysql_error());
 
 
-$sql = "select id from alquiler where id = '".$oAlquiler->id."' ";
+$sql = "SELECT `id` FROM `alquiler` WHERE `id`=".$oAlquiler->id." OR `idInmueble`=".$oAlquiler->idInmueble;
 
 
 $resultados = mysql_query($sql, $conexion) or die(mysql_error());

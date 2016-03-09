@@ -1,5 +1,5 @@
-
-	
+$.get('php/getClientes.php',null,tratarGetClientes,'json');
+$.get('php/getPropiedad.php',null,tratarGetPropiedad,'json');
  $("#capaFrmAltaAlquiler").dialog({
          autoOpen: true,  // Es el valor por defecto
          // beforeClose: antesDeCerrarse,
@@ -23,17 +23,32 @@
          }]
      });  
 
+function tratarGetPropiedad(oArrayCliente, sStatus, oXHR){
+
+		$("#cmbInmuebleAlquiler").empty();
+		$('<option value="0" >Seleccione un inmueble</option>').appendTo("#cmbInmuebleAlquiler");
+		jQuery.each(oArrayCliente, function( i , elemento){
+			$('<option value="' + elemento.id + '" >' +  elemento.id + '</option>').appendTo("#cmbInmuebleAlquiler");		
+		});
+}
+
+function tratarGetClientes(oArrayCliente, sStatus, oXHR){
+
+		$("#cmbClienteAlquiler").empty();
+		$('<option value="0" >Seleccione un cliente</option>').appendTo("#cmbClienteAlquiler");
+		jQuery.each(oArrayCliente, function( i , elemento){
+			$('<option value="' + elemento.dni + '" >'+  elemento.nombre+" "+elemento.apellidos+ '</option>').appendTo("#cmbClienteAlquiler");		
+		});
+}
 
 
 function procesoAltaAlquiler(){
 
-	// Aqui habría que hacer la validacion del formulario
-	// if (validarAltaPropietario()){
+
 	
-	//Creo un objeto propietario
-	
-	if (validarAltaAlquiler()){
-	var oAlquiler = new Alquiler(frmAltaAlquiler.txtId.value,frmAltaAlquiler.txtDniCliente.value,frmAltaAlquiler.txtDuracion.value,frmAltaAlquiler.txtPrecio.value,frmAltaAlquiler.txtCalendarioAlternativo.value,frmAltaAlquiler.txtIdInmueble.value);
+	if (validarAltaAlquiler())
+	{
+	var oAlquiler = new Alquiler(frmAltaAlquiler.txtId.value,$('#cmbClienteAlquiler').val(),frmAltaAlquiler.txtDuracion.value,frmAltaAlquiler.txtPrecio.value,frmAltaAlquiler.txtCalendarioAlternativo.value,$('#cmbInmuebleAlquiler').val());
 	
 	// Formateo de parametro POST
 	var sParametroPOST = "datos=" + JSON.stringify(oAlquiler);
@@ -70,26 +85,30 @@ function respuestaAltaAlquiler(){
 	if(oAjaxAltaAlquiler.readyState == 4 && oAjaxAltaAlquiler.status ==200)	{
 		var oArrayRespuesta = JSON.parse(oAjaxAltaAlquiler.responseText);
 		
-		if (oArrayRespuesta[0] == true){
-			alert("Error : " + oArrayRespuesta[1]);
-		} else {
-		
-			alert("OK : " + oArrayRespuesta[1]);
+		if(oArrayRespuesta[0]==true)
+		{
+			$("#pMensaje").text("");
+			$("#divMensajes").dialog("open");
+			$("#divMensajes").dialog("option","title","Estado");
+			$("#pMensaje").append(oArrayRespuesta[1]);
+		}
+		else
+		{
+			$("#pMensaje").text("");
+			$("#divMensajes").dialog("open");
+			$("#divMensajes").dialog("option","title","Estado");
+			$("#pMensaje").append(oArrayRespuesta[1]);
 			$("#frmAltaAlquiler")[0].reset();
-			
 		}
 	}
 }
 
 
-function validarAltaAlquiler(){
+function validarAltaAlquiler()
+{
 
-var bValido=true;
+	var bValido=true;
 	var sErrores = "";
-	
-	
-
-
 	
 	var oExpReg = /^(?:\+|-)?\d+$/;
 	
@@ -103,7 +122,7 @@ var bValido=true;
 			frmAltaAlquiler.txtId.focus();	
 		}
 	
-		sErrores += "\n id  incorrecto";
+		sErrores += "\n Id incorrecto  <br>";
 		
 		//Marcar error
 		frmAltaAlquiler.txtId.className = "form-control error";
@@ -115,6 +134,28 @@ var bValido=true;
 		
 	}
 
+	if(frmAltaAlquiler.cmbClienteAlquiler.value==0)
+	{
+		if(bValido == true)
+		{
+			bValido = false;		
+			//Este campo obtiene el foco
+			frmAltaAlquiler.cmbClienteAlquiler.focus();	
+		}
+	
+		sErrores += "\n Elije un cliente  <br>";
+		
+		//Marcar error
+		frmAltaAlquiler.cmbClienteAlquiler.className = "form-control error";
+	
+	}
+	else 
+	{
+		frmAltaAlquiler.cmbClienteAlquiler.className = "form-control";	
+		
+	}
+	
+	
 	if (oExpReg.test(frmAltaAlquiler.txtDuracion.value) == false)
 	{
 	
@@ -125,7 +166,7 @@ var bValido=true;
 			frmAltaAlquiler.txtDuracion.focus();	
 		}
 	
-		sErrores += "\n Duraccion  incorrecto";
+		sErrores += "\n Duración incorrecta  <br>";
 		
 		//Marcar error
 		frmAltaAlquiler.txtDuracion.className = "form-control error";
@@ -147,7 +188,7 @@ var bValido=true;
 			frmAltaAlquiler.txtPrecio.focus();	
 		}
 	
-		sErrores += "\n precio  incorrecto";
+		sErrores += "\n Precio incorrecto  <br>";
 		
 		//Marcar error
 		frmAltaAlquiler.txtPrecio.className = "form-control error";
@@ -161,34 +202,40 @@ var bValido=true;
 	
 	
 	if(frmAltaAlquiler.txtFecha.value == ""  ){
+		sErrores += "\n Fecha incorrecta  <br>";
 		frmAltaAlquiler.txtFecha.className = "form-control error";
 		bValido = false;
 	}else{
 		frmAltaAlquiler.txtFecha.className = "form-control";	
 	}
 
-
-	
-	
-
-	
-	
-	
-	/*
-	if(frmAltaAlquiler.txtFecha.value="")
+	if(frmAltaAlquiler.cmbInmuebleAlquiler.value==0)
 	{
-	frmAltaAlquiler.txtPrecio.className = "form-control error";	
-	}
-	else
-	{
-	frmAltaAlquiler.txtPrecio.className = "form-control";	
+		if(bValido == true)
+		{
+			bValido = false;		
+			//Este campo obtiene el foco
+			frmAltaAlquiler.cmbInmuebleAlquiler.focus();	
+		}
+	
+		sErrores += "\n Elije un inmueble <br> ";
+		
+		//Marcar error
+		frmAltaAlquiler.cmbInmuebleAlquiler.className = "form-control error";
 	
 	}
-	*/
-	
+	else 
+	{
+		frmAltaAlquiler.cmbInmuebleAlquiler.className = "form-control";	
+	}
 	
 	if (bValido == false)
-	{	
+	{
+	$("#pMensaje").text("");
+	$("#divMensajes").dialog("open");
+	$("#divMensajes").dialog("option","title","Error");
+	$("#pMensaje").append(sErrores);
+
 		
 	}
 	

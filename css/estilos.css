@@ -29,4 +29,4 @@ fieldset[disabled] .btn-actividad2:active, .btn-actividad2.disabled.active, .btn
 .btn-actividad2 .badge {color: #D1C81B;background-color: #1C0202;}
 .ui-datepicker-month,.ui-datepicker-year {background-color:black!important;}
 .error {background-color:yellow !important;}
-
+#listado{text-align:center;}

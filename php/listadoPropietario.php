@@ -1,5 +1,3 @@
-
-
 <?php
 // Cabecera para indicar que vamos a enviar datos JSON y que no haga caché de los datos.
 header('Content-Type: application/json');
@@ -23,7 +21,7 @@ mysql_query("SET NAMES 'utf8'", $conexion);
 mysql_select_db($basedatos, $conexion) or die(mysql_error());
 
 // Consulta SQL para obtener los datos de los propietarios
-$sql = "SELECT * FROM ventas; ";
+$sql = "SELECT * FROM inmueble; ";
 
 $resultados = mysql_query($sql, $conexion) or die(mysql_error());
 while ($fila = mysql_fetch_array($resultados, MYSQL_ASSOC)) {
@@ -36,4 +34,4 @@ echo json_encode($datos);
 
 mysql_close($conexion);
 
-?>  
+?> 
